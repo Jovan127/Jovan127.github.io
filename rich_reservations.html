@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="images/rich_favicon.png">
+  <title>Reservations - RICH</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0c0c0c;
+      color: #fff;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    /* Header */
+    header {
+      background: #111;
+      padding: 0px;
+    }
+    header img {
+      max-height: 150px;
+    }
+
+    /* Form container */
+    main {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #1c1c1c;
+      border-radius: 10px;
+    }
+
+    main h1 {
+      margin-bottom: 20px;
+      font-size: 2em;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      text-align: left;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input, select, textarea, button {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+    }
+
+    input, select, textarea {
+      background: #333;
+      color: #fff;
+    }
+
+    button[type="submit"] {
+      background: #f4a261;
+      color: #111;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button[type="submit"]:hover {
+      background: #e76f51;
+    }
+
+    /* Table selection grid */
+    .table-layout {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .table-layout button {
+      padding: 30px;
+      font-size: 18px;
+      background: #636363;
+      border: 2px solid #3b3b3b;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #f1f1f1;
+      transition: background 0.3s, border-color 0.3s, transform 0.2s;
+    }
+
+    .table-layout button.clicked {
+      background: #bd8d36;
+      border: 2px solid #886422;
+    }
+
+    .table-layout button:hover {
+      opacity: 0.85;
+      transform: scale(1.05);
+    }
+
+    #selectedOutput {
+      margin: 15px 0;
+      font-size: 16px;
+      color: #f1f1f1;
+      text-align: center;
+    }
+
+    /* Footer */
+    footer {
+      padding: 20px;
+      text-align: center;
+      background: #111;
+      color: #fff;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <a href="RICH.html">
+      <img src="images/rich_logo.png" alt="Logo">
+    </a>
+  </header>
+
+  <!-- Main content -->
+  <main>
+    <h1>Make a Reservation</h1>
+
+    <!-- Reservation form -->
+    <form>
+      <label for="name">Full Name:</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="email">Email Address:</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="phone">Phone Number:</label>
+      <input type="tel" id="phone" name="phone" required>
+
+      <label for="date">Date:</label>
+      <input type="date" id="date" name="date" required>
+
+      <label for="time">Time:</label>
+      <input type="time" id="time" name="time" required>
+
+      <label for="guests">Number of Guests:</label>
+      <select id="guests" name="guests">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4+">4+</option>
+      </select>
+
+      <!-- Table selection section -->
+      <h2>Select Your Table(s)</h2>
+      <div class="table-layout">
+        <button type="button" id="a1">A1</button>
+        <button type="button" id="a2">A2</button>
+        <button type="button" id="a3">A3</button>
+        <button type="button" id="a4">A4</button>
+
+        <button type="button" id="b1">B1</button>
+        <button type="button" id="b2">B2</button>
+        <button type="button" id="b3">B3</button>
+        <button type="button" id="b4">B4</button>
+
+        <button type="button" id="c1">C1</button>
+        <button type="button" id="c2">C2</button>
+        <button type="button" id="c3">C3</button>
+        <button type="button" id="c4">C4</button>
+      </div>
+
+      <div id="selectedOutput">Selected tables: (none)</div>
+      
+      <!-- Hidden input to pass selected tables with the form -->
+      <input type="hidden" id="selectedTablesInput" name="selectedTables">
+
+      <button type="submit">Submit Reservation</button>
+    </form>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2024 Royal Industry Clubhouse. All rights reserved.
+  </footer>
+
+  <script>
+    let selectedTables = [];
+    const output = document.getElementById("selectedOutput");
+    const hiddenInput = document.getElementById("selectedTablesInput");
+    const buttons = document.querySelectorAll(".table-layout button");
+
+    buttons.forEach(button => {
+      button.addEventListener("click", () => {
+        button.classList.toggle("clicked");
+
+        if (button.classList.contains("clicked")) {
+          selectedTables.push(button.innerText);
+        } else {
+          selectedTables = selectedTables.filter(item => item !== button.innerText);
+        }
+
+        if (selectedTables.length > 0) {
+          output.textContent = "Selected tables: " + selectedTables.join(", ");
+        } else {
+          output.textContent = "Selected tables: (none)";
+        }
+
+        // Save into hidden input so it goes with the form
+        hiddenInput.value = selectedTables.join(", ");
+      });
+    });
+  </script>
+</body>
+</html>

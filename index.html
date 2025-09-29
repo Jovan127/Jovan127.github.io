@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="images/rich_favicon.png">
+  <title>RICH</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #0c0c0c;
+      line-height: 1.6;
+    }
+
+    /* Header */
+    header {
+      background: #111; /* Dark background */
+      padding: 0px;
+      text-align: center;
+    }
+
+    header img {
+      max-height: 150px; /* Adjust logo height */
+    }
+
+    /* Block buttons section */
+    .block-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .block-button {
+      flex: 1; /* Each takes equal width */
+      min-width: 200px; /* Responsive minimum */
+      padding: 80px 100px;
+      border-radius: 0px 0px 10px 10px;
+      text-align: center;
+      background: #333;
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.5em;
+      font-weight: bold;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .block-button:hover {
+      background: #f4a261;
+      transform: translateY(-5px);
+    }
+
+    /* Optional: small gaps between buttons */
+    .block-button:not(:last-child) {
+      border-right: 2px solid #0c0c0c;
+    }
+
+    /* Placeholder for future content */
+    .placeholder {
+      padding: 100px 20px;
+      text-align: center;
+      color: #555;
+      font-size: 1.2em;
+    }
+
+    /* Footer */
+    footer {
+      padding: 20px;
+      text-align: center;
+      background: #111;
+      color: #fff;
+      margin-top: 40px;
+    }
+
+    /* Responsive: stack buttons on small screens */
+    @media (max-width: 768px) {
+      .block-buttons {
+        flex-direction: column;
+      }
+      .block-button {
+        border-right: none;
+        border-bottom: 2px solid #fff;
+      }
+      .block-button:last-child {
+        border-bottom: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header with logo -->
+  <header>
+    <!-- Replace 'logo.png' with your own logo image -->
+    <img src="images/rich_logo.png" alt="Logo">
+  </header>
+
+  <!-- Block buttons section -->
+  <section class="block-buttons">
+    <a href="RICH_reservations.html" class="block-button">Reservations</a>
+    <a href="about.html" class="block-button">About Us</a>
+    <a href="gallery.html" class="block-button">Gallery</a>
+  </section>
+
+  <!-- Placeholder for future content -->
+  <div class="placeholder">
+    <!-- You can add more sections here later -->
+    Content goes here...
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2024 Royal Industry Clubhouse. All rights reserved.
+  </footer>
+
+  <script>
+    // Currently no JS needed, but you can add scripts here later
+  </script>
+</body>
+</html>
