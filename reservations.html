@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" href="images/rich_favicon.png?">
+  <link rel="icon" type="image/png" href="images/rich_favicon.png">
   <title>Reservations - RICH</title>
   <style>
     body {
@@ -71,6 +71,19 @@
       background: #e76f51;
     }
 
+    /* Table section hidden with animation */
+    .table-section {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.6s ease, opacity 0.6s ease;
+    }
+
+    .table-section.show {
+      max-height: 1000px; /* enough space for content */
+      opacity: 1;
+    }
+
     /* Table selection grid */
     .table-layout {
       display: grid;
@@ -95,9 +108,18 @@
       border: 2px solid #886422;
     }
 
-    .table-layout button:hover {
+    .table-layout button:hover:not(.booked) {
       opacity: 0.85;
       transform: scale(1.05);
+    }
+
+    /* Booked tables */
+    .table-layout button.booked {
+      background: #444;
+      color: #999;
+      border: 2px solid #333;
+      cursor: not-allowed;
+      transform: none;
     }
 
     #selectedOutput {
@@ -120,7 +142,7 @@
 <body>
   <!-- Header -->
   <header>
-    <a href="index.html">
+    <a href="RICH.html">
       <img src="images/rich_logo.png" alt="Logo">
     </a>
   </header>
@@ -147,36 +169,36 @@
       <input type="time" id="time" name="time" required>
 
       <label for="guests">Number of Guests:</label>
-      <select id="guests" name="guests">
+      <select id="guests" name="guests" required>
+        <option value="">-- Select --</option>
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
         <option value="4+">4+</option>
       </select>
 
-      <!-- Table selection section -->
-      <h2>Select Your Table(s)</h2>
-      <div class="table-layout">
-        <button type="button" id="a1">A1</button>
-        <button type="button" id="a2">A2</button>
-        <button type="button" id="a3">A3</button>
-        <button type="button" id="a4">A4</button>
+      <!-- Table selection section (hidden until form filled) -->
+      <div class="table-section" id="tableSection">
+        <h2>Select Your Table(s)</h2>
+        <div class="table-layout">
+          <button type="button" id="a1">A1</button>
+          <button type="button" id="a2">A2</button>
+          <button type="button" id="a3">A3</button>
+          <button type="button" id="a4">A4</button>
 
-        <button type="button" id="b1">B1</button>
-        <button type="button" id="b2">B2</button>
-        <button type="button" id="b3">B3</button>
-        <button type="button" id="b4">B4</button>
+          <button type="button" id="b1">B1</button>
+          <button type="button" id="b2">B2</button>
+          <button type="button" id="b3">B3</button>
+          <button type="button" id="b4">B4</button>
 
-        <button type="button" id="c1">C1</button>
-        <button type="button" id="c2">C2</button>
-        <button type="button" id="c3">C3</button>
-        <button type="button" id="c4">C4</button>
+          <button type="button" id="c1">C1</button>
+          <button type="button" id="c2">C2</button>
+          <button type="button" id="c3">C3</button>
+          <button type="button" id="c4">C4</button>
+        </div>
+        <div id="selectedOutput">Selected tables: (none)</div>
+        <input type="hidden" id="selectedTablesInput" name="selectedTables">
       </div>
-
-      <div id="selectedOutput">Selected tables: (none)</div>
-      
-      <!-- Hidden input to pass selected tables with the form -->
-      <input type="hidden" id="selectedTablesInput" name="selectedTables">
 
       <button type="submit">Submit Reservation</button>
     </form>
@@ -191,10 +213,52 @@
     let selectedTables = [];
     const output = document.getElementById("selectedOutput");
     const hiddenInput = document.getElementById("selectedTablesInput");
-    const buttons = document.querySelectorAll(".table-layout button");
+    const allButtons = document.querySelectorAll(".table-layout button");
+    const dateInput = document.getElementById("date");
+    const timeInput = document.getElementById("time");
+    const formInputs = document.querySelectorAll("input[required], select[required]");
+    const tableSection = document.getElementById("tableSection");
 
-    buttons.forEach(button => {
+    // Fake database check (replace with API call later)
+    function checkBookedTables(date, time) {
+      if (date === "2025-09-25" && time === "19:00") {
+        return ["A2", "B3"];
+      } else if (date === "2025-09-26" && time === "20:00") {
+        return ["C4"];
+      }
+      return [];
+    }
+
+    function updateBookedTables() {
+      const date = dateInput.value;
+      const time = timeInput.value;
+      const booked = checkBookedTables(date, time);
+
+      allButtons.forEach(btn => {
+        btn.classList.remove("booked", "clicked");
+        btn.disabled = false;
+        btn.textContent = btn.id.toUpperCase();
+      });
+
+      booked.forEach(tableId => {
+        const btn = document.getElementById(tableId.toLowerCase());
+        if (btn) {
+          btn.classList.add("booked");
+          btn.disabled = true;
+          btn.textContent = "Booked";
+        }
+      });
+
+      selectedTables = [];
+      output.textContent = "Selected tables: (none)";
+      hiddenInput.value = "";
+    }
+
+    // Table selection logic
+    allButtons.forEach(button => {
       button.addEventListener("click", () => {
+        if (button.classList.contains("booked")) return;
+
         button.classList.toggle("clicked");
 
         if (button.classList.contains("clicked")) {
@@ -203,18 +267,35 @@
           selectedTables = selectedTables.filter(item => item !== button.innerText);
         }
 
-        if (selectedTables.length > 0) {
-          output.textContent = "Selected tables: " + selectedTables.join(", ");
-        } else {
-          output.textContent = "Selected tables: (none)";
-        }
+        output.textContent = selectedTables.length > 0
+          ? "Selected tables: " + selectedTables.join(", ")
+          : "Selected tables: (none)";
 
-        // Save into hidden input so it goes with the form
         hiddenInput.value = selectedTables.join(", ");
       });
+    });
+
+    // Show table section with animation when required fields are filled
+    function checkFormCompletion() {
+      let allFilled = true;
+      formInputs.forEach(input => {
+        if (!input.value) {
+          allFilled = false;
+        }
+      });
+
+      if (allFilled) {
+        tableSection.classList.add("show");
+        updateBookedTables();
+      } else {
+        tableSection.classList.remove("show");
+      }
+    }
+
+    formInputs.forEach(input => {
+      input.addEventListener("input", checkFormCompletion);
+      input.addEventListener("change", checkFormCompletion);
     });
   </script>
 </body>
 </html>
-
-
